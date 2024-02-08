@@ -68,23 +68,27 @@ def app():
                     st.write(recommendation["plan"]["description"])
                     # st.write(recommendation["plan"]["file"]["url"])
                     st.subheader("Give me the stats")
-
-                    st.dataframe(
-                        pd.DataFrame(
-                            recommendation["plan"]["plan_metric"],
-                            index=[0],
-                        )[
-                            [
-                                "nm",
-                                "map",
-                                "ac",
-                                "ftp",
-                                "duration",
-                                "tss",
-                                "intensity_factor",
-                            ]
-                        ].rename(columns={"intensity_factor": "if"}),
+                    df = pd.DataFrame(
+                        recommendation["plan"]["plan_metric"],
+                        index=[0],
+                    )[
+                        [
+                            "nm",
+                            "map",
+                            "ac",
+                            "ftp",
+                            "duration",
+                            "tss",
+                            "intensity_factor",
+                        ]
+                    ].rename(
+                        columns={
+                            "intensity_factor": "if",
+                            "duration": "minutes",
+                        }
                     )
+                    df["minutes"] = (df["minutes"] / 60) // 1
+                    st.dataframe(df)
 
             with st.expander("Inspect JSON"):
                 st.write(recommendations)
